@@ -19,7 +19,8 @@ var socket = io();
 		}
 	});
     socket.on('chat message', function(msg){
-        $('#block-text').append("<p class='item'>"+ msg + "</p>");
+    	console.log("je passe");
+        $('#block-text').append("<p class='item'>"+ msg.text + "</p>");
         $('#block-text ').animate({
         	scrollTop: $(' #block-text .item:last-child').position().top
     	}, 'slow');
@@ -178,7 +179,11 @@ var socket = io();
   		})
 
   		socket.on('send user', function(data){
-  			$("#block-text").append($('<p>').text(data));
+  			$("#block-text").append("<p class='item'>" + data.text + "</p>" );
+  			$('#block-text ').animate({
+        		scrollTop: $(' #block-text .item:last-child').position().top
+    		}, 'slow');
+    		$('#task').val('');
   		})
 
   		socket.on('result leave', function(data, name) {

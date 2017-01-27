@@ -192,7 +192,8 @@ io.on('connection', function(socket){
   	for (var i = 0; i < users.length; i++) {
   		if (socket.channel == users[i].current && nom == users[i].name ) {
   			var mesu = users[i].name;
-  			mesu.io.socket.emit('send user', socket.pseudo + " to " + name + ": " + msg);
+  			socket.broadcast.to(users[i].id).emit('send user', {text: socket.pseudo + " to " + nom + ": " + msg });
+  			socket.emit('send user', {text: socket.pseudo + " to " + nom + ": " + msg });
   		};
   	};
 
@@ -200,7 +201,7 @@ io.on('connection', function(socket){
 
   //Send message
   socket.on('chat message', function(msg){
-    io.emit('chat message', socket.pseudo + " dit: " + msg);
+    io.to(socket.channel).emit('chat message', {text: socket.pseudo + " dit: " + msg});
   });
 
   socket.on('disconnect', function(){
