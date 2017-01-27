@@ -10,7 +10,8 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
         <link href="https://fonts.googleapis.com/css?family=Lato:100" rel="stylesheet">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-        <link href="https://fonts.googleapis.com/css?family=Oswald:300,400,700" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="css/style.css">
 
         <!--JS-->
         <script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
@@ -22,26 +23,16 @@
     </head>
 
     <body>
-        <div>
-            <h1>
-                ChatIRC - choose your Username
-            </h1>
-        </div>
-    <!--messages other user-->
-        <div id="them">
-            
-        </div>
-    <!--end-->
+        <div class="container" id="back">    
+            <div class="col-md-12" id="hide">
+                <h1>
+                    ChatIRC - choose your Username
+                </h1>
+                <input id="m" placeholder="Pseudo" autocomplete="off" class="input-text" />
+                <button id="go" class="btn  color-blue btn-go ">Go</button>
 
-    <!--messages current user-->       
-        <div id="you">
-            
+                <div ng-include="'templates/pages/command.html'"></div> 
+            </div>
         </div>
-    <!--end-->
-
-        <input id="m" placeholder="Pseudo" autocomplete="off" />
-        <button id="go">Go</button>
-
-        <div ng-include="'templates/pages/command.html'"></div> 
     </body>
 </html>

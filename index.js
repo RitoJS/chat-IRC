@@ -23,35 +23,30 @@ express.get('/channel', function(req, res){
 
 io.on('connection', function(socket){
   socket.on('adduser', function (value){
-  	//console.log("avant: ", users);
   	socket.pseudo = value;
-  	//console.log(socket.pseudo);
 
   	socket.channel = channels[0]; 
   	user = {
   		id: socket.id,
   		name: value,
-  		channel: [channels[0]],
   		current: channels[0],
   	};
   	users.push(user);
 
-  	//console.log("après :" , users);
 
   	socket.join('chan1');
 
-  	socket.emit('updatechat', 'SERVER', 'vous êtes connecté au chan1');
+  	socket.emit('welcome message', socket.pseudo);
 
   	socket.broadcast.to('chan1').emit('updatechat', 'SERVER', socket.pseudo + " s'est connecté au chan1" );
-	//socket.emit('updatechan', channels, 'chan1');
   });	
 
   socket.on('edit name', function (value){
   	var str2 = value.replace(/\s+/g, '');
   	var str = "/nick";
+  	var ancient = socket.pseudo;
 
   	var start = str.length;
-  	//console.log(start);
   	var cut = str2.substr(start);
   	socket.pseudo = cut;
   	
@@ -62,7 +57,8 @@ io.on('connection', function(socket){
   		};
   	};
 
-  	console.log('change: ', socket.pseudo);
+  	socket.emit('rename user', ancient + " s'appelle maintenant " + socket.pseudo);
+
 
   });
 
@@ -113,18 +109,22 @@ io.on('connection', function(socket){
 
   	var start = str.length;
   	var cut = str2.substr(start);
+  	var good = 0;
   	//join
   	for (var i = 0; i < channels.length; i++) {
   		if(cut === channels[i]) {
-  			
-  			socket.emit('update channel', cut);
-  			
-  			return false;
+  			good ++;
+  			console.log("coucou");  			
   		} else {
-  			statut = "pas cool";
+
   		}
   		
   	};
+  	if (good > 0) {
+  		socket.emit('update channel', cut);
+  	} else {
+  		socket.emit('not in');
+  	}
   	  	
   })
 
@@ -133,19 +133,19 @@ io.on('connection', function(socket){
   	var statut;
   	for (var i = 0; i < users.length; i++) {
   	//update reference object
-  		if (socket.id == users[i].id && users[i].channel[i] != data) {
-  			users[i].channel.push(data);
+  		if (socket.id == users[i].id && users[i].current != data) {
   			users[i].current = data;
   			socket.join(data);
   			socket.channel = data;
   			statut = "cool";
-  			socket.emit('result join', statut, socket.channel);
  		} else {
  			console.log("nope");
  			statut = "pas cool";
  		}
   	};
   	console.log('tab: ', users);
+  	socket.emit('result join', statut, socket.channel);
+
   })
 
   //Leave channel
@@ -155,17 +155,25 @@ io.on('connection', function(socket){
 
   	var start = str.length;
   	var cut = str2.substr(start);
-  	var statut;
-  	socket.leave(socket.channel);
-  	statut = "success";
-  	socket.emit('result leave', statut);
+  	var statut = 0;
+  	for (var i = 0; i < users.length; i++) {
+  		if (socket.id == users[i].id && cut == users[i].current) {
+  			socket.leave(socket.channel);
+  			statut ++;
+  		};
+  	};
+
+  	if (statut > 0) {
+  		var res = "success"
+  		socket.emit('result leave', res, socket.pseudo);
+  	} else {
+  		//socket.emit('not leave');
+  	}
 
   })
 
   //send messages to specific user
   socket.on('msg user', function(data) {
-  	//var str2 = data.replace(/\s+/g, '');
-  	//var "/msg ";
 
   	if (data.substr(0, 5) === "/msg ") {
   		data = data.substr(5);
@@ -182,7 +190,7 @@ io.on('connection', function(socket){
   	console.log("nom: ", nom);
   	console.log("msg: ", msg);
   	for (var i = 0; i < users.length; i++) {
-  		if (socket.channel == users[i].channel[i] && nom == users[i].name ) {
+  		if (socket.channel == users[i].current && nom == users[i].name ) {
   			var mesu = users[i].name;
   			mesu.io.socket.emit('send user', socket.pseudo + " to " + name + ": " + msg);
   		};

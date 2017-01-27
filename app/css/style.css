@@ -1,0 +1,78 @@
+body {
+	background: url('../images/back.jpg') no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  font-family: 'Raleway', sans-serif;
+  color: white;
+}
+
+#hide {
+	display: block; 
+	margin-right: auto;
+	margin-left: auto;
+	text-align: center;
+}
+
+#m {
+	
+}
+
+.input-text {
+	display: block;
+	clear: both;
+	margin-left: auto;
+	margin-right: auto;
+	margin-bottom: 1em;
+	width: 50%;
+	background: none;
+	border: 0px solid;
+	text-align: center;
+	font-size: 1.6em;
+	border-bottom: 3px solid #ecf0f1;
+	border-radius: 10px;
+}
+.input-text:focus {
+	outline: none;
+}
+.btn-go {
+	width: 30%;
+	font-size: 1.6em;
+}
+
+.color-blue {
+	background-color: #34495e;
+	border: 1px solid #2c3e50;
+}
+
+#block-text {
+	margin-top: 1em;
+	border: 3px solid #bdc3c7;
+	height: 500px;
+	border-radius: 15px;
+	background-color: #34495e;
+	text-align: left;
+	overflow-y: auto;  
+
+}
+.item {
+	padding: 1em;
+	font-size: 1.3em;
+	border-radius: 10px;
+	margin: 1em;
+}
+.item:nth-child(odd) {
+	background-color: #bdc3c7;
+}
+
+.item:nth-child(even) {
+	background-color: #95a5a6;
+}
+.italic {
+	font-style: italic;
+}
+
+.bold {
+	font-weight: bold;
+}

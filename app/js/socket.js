@@ -6,8 +6,6 @@ var socket = io();
 
 //Partie messages
     $("#go").click(function() {
-		//socket = io.connect('http://localhost:3000');
-		console.log("je passe");
 		socket.emit('adduser', $('#m').val());
         
         $('#m').val('');
@@ -21,7 +19,10 @@ var socket = io();
 		}
 	});
     socket.on('chat message', function(msg){
-        $('#you').append($('<p>').text(msg));
+        $('#block-text').append("<p class='item'>"+ msg + "</p>");
+        $('#block-text ').animate({
+        	scrollTop: $(' #block-text .item:last-child').position().top
+    	}, 'slow');
     });
 
 //Partie task
@@ -106,41 +107,54 @@ var socket = io();
 	function users() {
 		socket.emit('list users');
 
-		socket.on('listU', function(data){
-			console.log("create tab: ", data );
-
-			$("#bold").append($('<p>').text("Liste des utilisateurs:"));
-
-			for (var i = 0; i < data.length; i++) {
-				console.log("nom: ", data[i]);
-				$('#result').append($('<p>').text(data[i].name));
-			};	
-			$('#task').val('');
-		})
+		
 
   	}
 
   	function list(value) {
   		socket.emit('list channel', value);
 
-  		socket.on('result channels', function(data) {
-  			if (data.length == 0) {
-  				$("#bold").val('');
-  				$("#bold").append($('<p>').text("Aucun channel disponible correspondant a votre recherche. :("));
-  			} else {
-  				$("#bold").val('');
-  				$("#result").val('');
-  				$("#bold").append($('<p>').text("Voici la liste des channels disponibles:"));
-  				for (var i = 0; i < data.length; i++) {
-  					$("#result").append($('<p>').text(data[i]));
-  				};
-
-  			}
-  		})
+  		
   	}
 
   	function joinChan(value) {
   		socket.emit('join channel', value);
+
+  		
+  		
+
+  		
+  	}
+
+  	function part(value) {
+  		socket.emit('leave channel', value);
+  		$("#bold").val('');
+  		
+  	}
+	
+  	function msgUser(value) {
+  		socket.emit('msg user', value);
+
+  		 	
+  	}
+
+  	//end function
+
+  	//socket on
+
+  		socket.on('welcome message', function(data){
+  			$("#block-text").append("<h1 class='bold'>Bienvenue " + data + "!</h1>");
+  			$('#block-text ').animate({
+        		scrollTop: $(' #block-text .bold:last-child').position().top
+    		}, 'slow');	
+  		})
+
+  		socket.on('rename user', function(data){
+  			$("#block-text").append("<p class='italic'>"+ data + "</p>");
+  			$('#block-text ').animate({
+        		scrollTop: $(' #block-text .bold:last-child').position().top
+    		}, 'slow');
+  		})
 
   		socket.on('update channel', function(data){
   			socket.emit('update', data);
@@ -149,32 +163,78 @@ var socket = io();
   		socket.on('result join', function(data, name) {
   			$("#bold").val('');
   			if (data == "cool") {
-  				$("#bold").append($('<p>').text("Vous avez bien rejoint le " + name));
+  				$("#block-text").append("<p class='italic'>Vous avez bien rejoint le " + name + "</p>");
+  				$('#block-text ').animate({
+        			scrollTop: $(' #block-text .italic:last-child').position().top
+    			}, 'slow');
+  				$('#task').val('');
   			} else {
-  				$("#bold").append($('<p>').text("Aucun channel disponible correspondant a votre recherche. :("));
+  				$("#block-text").append("<p class='italic'>Vous êtes déjà sur ce channel</p>");
+  				$('#block-text ').animate({
+        			scrollTop: $(' #block-text .italic:last-child').position().top
+    			}, 'slow');
+  				$('#task').val('');
   			}
   		})
-  	}
-
-  	function part(value) {
-  		socket.emit('leave channel', value);
-  		$("#bold").val('');
-  		socket.on('result leave', function(data, name) {
-  			if (data == "sucess"){
-  				$("#you").append($('<p>').text( name + " a quitter ce channel"));
-  			} else {
-  				$("#bold").append($('<p>').text("Aucun channel disponible correspondant a votre recherche. :("));
-  			}
-  		})
-  	}
-	
-  	function msgUser(value) {
-  		socket.emit('msg user', value);
 
   		socket.on('send user', function(data){
-  			$("#you").append($('<p>').text(data));
-  		}) 	
-  	}
+  			$("#block-text").append($('<p>').text(data));
+  		})
 
-  	//end function
+  		socket.on('result leave', function(data, name) {
+  			if (data == "success"){
+  				$("#block-text").empty();
+  				$("#block-text").append("<p class='italic'>"+ name + " a quitter ce channel</p>");
+  			} else {
+  				$("#block-text").append("<p class='italic'>Aucun channel disponible correspondant a votre recherche. :(</p>");
+  				$('#block-text ').animate({
+        			scrollTop: $(' #block-text .italic:last-child').position().top
+    			}, 'slow');
+  			}
+  		})
+
+
+  		socket.on('result channels', function(data) {
+  			if (data.length == 0) {
+  				$("#block-text").append("<p class='italic'>Aucun channel disponible correspondant a votre recherche. :(</p>");
+  				$('#block-text ').animate({
+        			scrollTop: $(' #block-text .italic:last-child').position().top
+    			}, 'slow');
+  			} else {
+  				
+  				$("#result").val('');
+  				$("#block-text").append("<p class='italic'>Voici la liste des channels disponibles:</p>");
+  				for (var i = 0; i < data.length; i++) {
+  					$("#block-text").append("<p class='italic'>" + data[i] + "</p>");
+  					
+  				};
+  				$('#block-text').animate({
+        			scrollTop: $(' #block-text .italic:last-child').position().top
+    			}, 'slow');
+
+  			}
+  		})
+
+  		socket.on('listU', function(data){
+			
+
+			$("#block-text").append("<p class='italic'>Liste des utilisateurs:</p>");
+
+			for (var i = 0; i < data.length; i++) {
+				$('#block-text').append("<p class='italic'>" + data[i].name + "</p>");
+
+			};	
+			$('#block-text ').animate({
+        		scrollTop: $(' #block-text .italic:last-child').position().top
+    		}, 'slow');
+			$('#task').val('');
+		})
+
+		socket.on('not in', function(){
+  			$("#bold").append("<p class='italic'>Aucun channel disponible correspondant a votre recherche. :(</p>");
+  			$('#block-text ').animate({
+        		scrollTop: $(' #block-text .italic:last-child').position().top
+    		}, 'slow');
+  			$('#task').val('');
+  		})
 })
