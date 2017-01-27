@@ -57,7 +57,7 @@ io.on('connection', function(socket){
   		};
   	};
 
-  	socket.emit('rename user', ancient + " s'appelle maintenant " + socket.pseudo);
+  	io.to(socket.channel).emit('rename user', ancient + " s'appelle maintenant " + socket.pseudo);
 
 
   });
@@ -165,9 +165,9 @@ io.on('connection', function(socket){
 
   	if (statut > 0) {
   		var res = "success"
+  		io.to(socket.channel).emit('result leave', res, socket.pseudo);
   		socket.emit('result leave', res, socket.pseudo);
   	} else {
-  		//socket.emit('not leave');
   	}
 
   })
@@ -205,7 +205,8 @@ io.on('connection', function(socket){
   });
 
   socket.on('disconnect', function(){
-    console.log('user disconnected');
+    socket.disconnect();
+    socket.emit('leave front', socket.pseudo);
   });
 
 });

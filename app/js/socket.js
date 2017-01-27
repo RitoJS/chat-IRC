@@ -242,4 +242,16 @@ var socket = io();
     		}, 'slow');
   			$('#task').val('');
   		})
+
+  		socket.on('disco', function(){
+  			socket.emit('disconnect');
+  		})
+
+  		socket.on('leave front', function(data){
+  			$("#bold").append("<p class='italic'>" + data + " s'est déconnecté</p>");
+  			$('#block-text ').animate({
+        		scrollTop: $(' #block-text .italic:last-child').position().top
+    		}, 'slow');
+  			$('#task').val('');
+  		})
 })
