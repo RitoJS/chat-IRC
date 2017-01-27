@@ -139,11 +139,9 @@ io.on('connection', function(socket){
   			socket.channel = data;
   			statut = "cool";
  		} else {
- 			console.log("nope");
  			statut = "pas cool";
  		}
   	};
-  	console.log('tab: ', users);
   	socket.emit('result join', statut, socket.channel);
 
   })
@@ -187,8 +185,6 @@ io.on('connection', function(socket){
 
   	
   	
-  	console.log("nom: ", nom);
-  	console.log("msg: ", msg);
   	for (var i = 0; i < users.length; i++) {
   		if (socket.channel == users[i].current && nom == users[i].name ) {
   			var mesu = users[i].name;
